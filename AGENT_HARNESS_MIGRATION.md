@@ -106,17 +106,17 @@ All existing functionality is preserved:
 
 | Feature | Claude Code | Gemini CLI | Bob | Notes |
 |---------|-------------|------------|-----|-------|
-| Session Continuity | ✅ | ✅ | ✅ | Gemini/Bob use custom storage |
-| Streaming | ✅ | ✅ | ✅ | All support streaming |
-| Tool Execution | ✅ | ❌ | ❌ | Gemini/Bob need implementation |
-| MCP Support | ✅ | ❌ | ❌ | Gemini/Bob don't support MCP |
-| Message Piping | ✅ | ⚠️ | ⚠️ | Gemini/Bob have limited support |
-| Bash Commands | ✅ | ❌ | ❌ | Needs implementation |
-| File Operations | ✅ | ❌ | ❌ | Needs implementation |
-| Web Access | ✅ | ❌ | ❌ | Needs implementation |
-| Agent Teams | ✅ | ❌ | ❌ | Not supported |
-| CLAUDE.md Memory | ✅ | ⚠️ | ⚠️ | System prompt only |
-| Conversation Archive | ✅ | ❌ | ❌ | Not implemented |
+| Session Continuity | ✅ | ✅ | ✅ | All support session persistence |
+| Streaming | ✅ | ✅ | ✅ | All support streaming responses |
+| Tool Execution | ✅ | ❌ | ✅ | Bob now has full tool support |
+| MCP Support | ✅ | ❌ | ✅ | Bob now supports MCP integration |
+| Message Piping | ✅ | ⚠️ | ✅ | Bob has enhanced message piping |
+| Bash Commands | ✅ | ❌ | ✅ | Bob can execute bash commands |
+| File Operations | ✅ | ❌ | ✅ | Bob supports read/write/list |
+| Web Access | ✅ | ❌ | ⚠️ | Bob has placeholder (needs API) |
+| Agent Teams | ✅ | ❌ | ❌ | Not yet supported in Bob |
+| CLAUDE.md Memory | ✅ | ⚠️ | ✅ | Bob loads CLAUDE.md files |
+| Conversation Archive | ✅ | ❌ | ✅ | Bob archives conversations |
 | Session Storage | `.claude/` | `.gemini-sessions/` | `.bob/` or `.agents/` | Different locations |
 
 ## Implementation Details
@@ -212,9 +212,32 @@ Check container logs for:
 
 ## Known Limitations
 
-### Gemini and Bob Harnesses
+### Bob Harness
 
-The current Gemini and Bob implementations are **basic** and lack:
+Bob now has **feature parity** with Claude Code for most use cases:
+
+✅ **Implemented Features:**
+1. **Tool Execution** - Full support for Bash, file operations
+2. **MCP Integration** - Scheduler and custom tools work
+3. **Enhanced Message Piping** - Real-time message streaming
+4. **Conversation Archiving** - Automatic archiving when sessions grow
+5. **CLAUDE.md Memory** - Loads and uses memory files
+
+⚠️ **Minor Limitations:**
+- **Web Access** - Placeholder implementation (needs actual web search API)
+- **Agent Teams** - Not yet implemented (future enhancement)
+
+Bob is now suitable for:
+- ✅ Complex workflows requiring tools
+- ✅ Scheduled tasks with file access
+- ✅ Multi-step agent orchestration
+- ✅ All standard NanoClaw features
+- ⚠️ Web search (needs API integration)
+- ❌ Agent teams (not yet supported)
+
+### Gemini CLI Harness
+
+The Gemini CLI implementation remains **basic** and lacks:
 
 1. **Tool Execution** - No Bash, file operations, or web access
 2. **MCP Integration** - Scheduler tools won't work
@@ -222,13 +245,11 @@ The current Gemini and Bob implementations are **basic** and lack:
 4. **No Conversation Archiving** - Pre-compact hooks not available
 5. **Simpler Memory** - Only system prompt, no CLAUDE.md file loading
 
-These limitations mean Gemini/Bob are suitable for:
+Gemini CLI is suitable for:
 - ✅ Simple conversational tasks
 - ✅ Text generation and analysis
 - ✅ Basic Q&A
 - ❌ Complex workflows requiring tools
-- ❌ Scheduled tasks with file access
-- ❌ Multi-step agent orchestration
 
 ### Credential Proxy
 
