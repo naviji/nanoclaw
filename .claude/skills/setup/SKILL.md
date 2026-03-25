@@ -112,15 +112,52 @@ Run `npx tsx setup/index.ts --step container -- --runtime <chosen>` and parse th
 
 **If TEST_OK=false but BUILD_OK=true:** The image built but won't run. Check logs — common cause is runtime not fully started. Wait a moment and retry the test.
 
-## 4. Claude Authentication (No Script)
+## 4. AI Agent Authentication (No Script)
 
-If HAS_ENV=true from step 2, read `.env` and check for `CLAUDE_CODE_OAUTH_TOKEN` or `ANTHROPIC_API_KEY`. If present, confirm with user: keep or reconfigure?
+NanoClaw supports multiple AI agents. See `.claude/skills/AGENT_SELECTION.md` for details.
+
+If HAS_ENV=true from step 2, read `.env` and check for existing agent configuration. If present, confirm with user: keep or reconfigure?
+
+AskUserQuestion: Which AI agent would you like to use?
+- **Claude Code** (default) - Full features, Anthropic
+- **Bob** - Full features, Gemini-compatible
+- **Gemini CLI** - Basic Q&A only, Google
+
+### Claude Code Setup
 
 AskUserQuestion: Claude subscription (Pro/Max) vs Anthropic API key?
 
-**Subscription:** Tell user to run `claude setup-token` in another terminal, copy the token, add `CLAUDE_CODE_OAUTH_TOKEN=<token>` to `.env`. Do NOT collect the token in chat.
+**Subscription:** Tell user to run `claude setup-token` in another terminal, copy the token, add to `.env`:
+```bash
+AGENT_HARNESS_TYPE=claude-code
+CLAUDE_CODE_OAUTH_TOKEN=<token>
+```
 
-**API key:** Tell user to add `ANTHROPIC_API_KEY=<key>` to `.env`.
+**API key:** Tell user to add to `.env`:
+```bash
+AGENT_HARNESS_TYPE=claude-code
+ANTHROPIC_API_KEY=<key>
+```
+
+### Bob Setup
+
+Tell user to add to `.env`:
+```bash
+AGENT_HARNESS_TYPE=bob
+BOBSHELL_API_KEY=<your-bob-key>
+BOB_MODEL=gemini-2.0-flash-exp  # Optional
+```
+
+### Gemini CLI Setup
+
+Tell user to get API key from https://makersuite.google.com/app/apikey and add to `.env`:
+```bash
+AGENT_HARNESS_TYPE=gemini
+GEMINI_API_KEY=<your-key>
+GEMINI_MODEL=gemini-2.0-flash-exp  # Optional
+```
+
+**Note:** Gemini CLI has limited features (no tools, no MCP). For full features, use Claude Code or Bob.
 
 ## 5. Set Up Channels
 
@@ -209,7 +246,7 @@ Tell user to test: send a message in their registered chat. Show: `tail -f logs/
 
 **Service not starting:** Check `logs/nanoclaw.error.log`. Common: wrong Node path (re-run step 7), missing `.env` (step 4), missing channel credentials (re-invoke channel skill).
 
-**Container agent fails ("Claude Code process exited with code 1"):** Ensure the container runtime is running — `open -a Docker` (macOS Docker), `container system start` (Apple Container), or `sudo systemctl start docker` (Linux). Check container logs in `groups/main/logs/container-*.log`.
+**Container agent fails ("Agent process exited with code 1"):** Ensure the container runtime is running — `open -a Docker` (macOS Docker), `container system start` (Apple Container), or `sudo systemctl start docker` (Linux). Check container logs in `groups/main/logs/container-*.log`. Verify your agent's API key is correctly set in `.env`.
 
 **No response to messages:** Check trigger pattern. Main channel doesn't need prefix. Check DB: `npx tsx setup/index.ts --step verify`. Check `logs/nanoclaw.log`.
 

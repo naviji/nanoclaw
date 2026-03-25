@@ -26,7 +26,7 @@ This skill helps users add capabilities or modify behavior. Use AskUserQuestion 
 | `src/config.ts` | Assistant name, trigger pattern, directories |
 | `src/db.ts` | Database initialization and queries |
 | `src/whatsapp-auth.ts` | Standalone WhatsApp authentication script |
-| `groups/CLAUDE.md` | Global memory/persona |
+| `groups/CLAUDE.md` | Global memory/persona (works with all agents) |
 
 ## Common Customization Patterns
 
@@ -54,6 +54,8 @@ Implementation:
 1. Add MCP server config to the container settings (see `src/container-runner.ts` for how MCP servers are mounted)
 2. Document available tools in `groups/CLAUDE.md`
 
+**Note:** MCP is supported by Claude Code and Bob. Gemini CLI doesn't support MCP.
+
 ### Changing Assistant Behavior
 
 Questions to ask:
@@ -61,8 +63,10 @@ Questions to ask:
 - Apply to all groups or specific ones?
 
 Simple changes → edit `src/config.ts`
-Persona changes → edit `groups/CLAUDE.md`
+Persona changes → edit `groups/CLAUDE.md` (works with all agents)
 Per-group behavior → edit specific group's `CLAUDE.md`
+
+**Note:** CLAUDE.md files work with all agents (Claude Code, Bob, Gemini), though with different levels of support. See `.claude/skills/AGENT_SELECTION.md` for details.
 
 ### Adding New Commands
 
@@ -74,6 +78,8 @@ Questions to ask:
 Implementation:
 1. Commands are handled by the agent naturally — add instructions to `groups/CLAUDE.md` or the group's `CLAUDE.md`
 2. For trigger-level routing changes, modify `processGroupMessages()` in `src/index.ts`
+
+**Note:** Tool-based commands require Claude Code or Bob. Gemini CLI only supports conversational commands.
 
 ### Changing Deployment
 
